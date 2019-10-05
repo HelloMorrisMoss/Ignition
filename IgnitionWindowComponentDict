@@ -1,0 +1,322 @@
+	# import java error handling library so out of bounds can be handled by python
+from java.lang import Exception
+from timeit import default_timer as timer
+
+glob = system.util.getGlobals()
+
+print system.date.now()
+runtime = timer()
+
+
+glob['objFound'] = 0 # counting found objects
+glob['loopDepth'] = 0 # watching how far down recursively we've gone
+if 'components' in glob:
+	del glob['components']
+
+
+
+# to create or add to a dictionary stored in  global
+# under construction
+def Glob(dictionary, key='', item=''):
+	glob = system.util.getGlobals()
+	
+	if dictionary not in glob:
+		glob[dictionary]= {}
+	
+	if key <> '':
+		dict = glob[dictionary]
+		dict[key] = item
+		
+componentsDict = {}		
+
+def CrawlDown(object):
+	
+	print 'working with: ', object # what are we working with?
+	
+	startTime = timer() # used for infinite loop protection
+	
+	depth = glob['loopDepth']
+	count = 0 # for looping
+	
+	objFound = 0
+	#glob['objFound'] = objFound # MAKE ANOTHER FN THAT TAKES THE KEY/VAL AND ADDS TO THE DICT
+	
+	while True:
+		try:
+			componentNow = object.getComponent(count)
+			
+			print 'trying: ', count, 'at depth', depth, ' ', componentNow.name, 'objects found so far: ', objFound
+			componentsDict[componentNow.name] = componentNow
+			depth += 1
+			objFound += 1
+			CrawlDown(componentNow)
+		except Exception, err:
+#			print 'exception caught on counter#', count, type(err)
+			oobErr = "<type 'java.lang.ArrayIndexOutOfBoundsException'>"
+									
+			if str(type(err)) == oobErr:
+#				print count, " is out of bounds"
+				pass
+			else:
+				pass
+			depth -= 1
+			break
+		
+		finally:
+			count += 1
+			if timer() - startTime > 10:
+				print '10 seconds'
+				break
+				
+	# print out the values in dictionary, 4debug
+#	for i in dictComponentDictionary:
+#		comp = dictComponentDictionary[i] 
+#		print type(comp), comp.name, comp.text
+
+
+CrawlDown(system.gui.getParentWindow(event).parent)
+
+print 'creating components global dictionary'
+glob['components'] = componentsDict
+
+print timer() - runtime
+
+
+'''
+# this does find some components, needs to be made into a general function so can be called recursively down the tree
+	try:
+	for i in range(10):
+#		print 'layer i: ', system.gui.getParentWindow(event).parent.getComponent(i), system.gui.getParentWindow(event).parent.getComponentForPath(i) # the last one throws an unhandled error, even with java exceptions
+#		print 'layer i: ', system.gui.getParentWindow(event).parent.getComponent(i) # prints main window, then for j 'jrootpane'
+#		print system.date.now(), 'layer i: ', system.gui.getParentWindow(event).getComponent(0).getComponent(0).getComponent(i) # only out of bounds error from except
+		print 'layer i= ', i, ' ', system.gui.getParentWindow(event).getComponent(0).getComponent(1).getComponent(0).getComponent(i) 
+		iComp = system.gui.getParentWindow(event).getComponent(0).getComponent(1).getComponent(0).getComponent(i)
+		
+		for j in range(10):
+			#print 'layer j: ', system.gui.getParentWindow(event).parent.getComponent(i).getComponent(j)
+			print 'layer j: ', iComp.getComponent(j)
+			pass
+			
+except Exception, err:
+	print type(err)
+'''
+
+
+
+
+
+'''
+	This this designed to crawl down the whole project tree, find all components
+	add them to a dictionary, store that dictionary in the global dictionary, to
+	be accessible anywhere, so that components can be accessed by their name, without
+	needing to source.parent.parent.getComponent.getComponent to get there, which breaks
+	your code if you move any of that into or out of a container
+	
+	it does not fix the code breaking if you rename the component; but that exists
+	either way
+	'''
+	
+
+'''	
+	# access dictionary of globally available objects
+	# will store our own dictionary in here
+	glob = system.util.getGlobals()
+	
+	# declare our dictionary
+	dictComponentDictionary = {}
+	
+	
+	print 'starting at ', system.date.now() # 4debug
+	class CompIter:
+		def iterator(self):
+			# iterates over the objects in container and adds to dictionary
+			n = 0 # start counter at 0
+			startTime = timer() # used for infinite loop protection
+			
+			while True:
+				try:
+					comp = event.source.getComponent(n)
+					print event.source.getComponent(n).name
+					
+			# this catches the out of bounds error now thanks to: 	from java.lang import Exception	
+				except Exception, err:
+					print type(err)
+					break
+				finally:
+					n += 1
+					
+					# just in case of infinite looping, a million loops or 10 seconds, break the loop
+					if n > 1000000:
+						break
+					if timer() - startTime > 10:
+						print '10 seconds'
+						break
+				
+			# add the component to our dictionary, they key is its name
+			# NEED KEY ALREADY EXISTS HANDLING
+				dictComponentDictionary[comp.name] = comp
+			
+			# print out the values in dictionary, 4debug
+			for i in dictComponentDictionary:
+				comp = dictComponentDictionary[i] 
+				print type(comp), comp.name, comp.text
+			
+			# add the dictionary to the global dictionary
+			glob['components'] = dictComponentDictionary
+			
+			print 'completed in {} seconds' .format(timer() - startTime) # 4debug
+'''	
+	
+	# ======================================================
+	# earlier development work, for posterity
+	# ======================================================
+'''
+	
+	# this is working, needs duplicate component name handling and
+	# isn't set up to crawl down the full tree yet
+	
+	# import java error handling library so out of bounds can be handled by python
+	from java.lang import Exception
+	
+	# access dictionary of globally available objects
+	# will store our own dictionary in here
+	glob = system.util.getGlobals()
+	
+	# declare our dictionary
+	dictComponentDictionary = {}
+	
+	
+	print system.date.now() # 4debug
+	
+	# iterates over the objects in container and adds to dictionary
+	n = 0 # start counter at 0
+	
+	while True:
+		try:
+			comp = event.source.getComponent(n)
+			print event.source.getComponent(n).name
+			
+	# this catches the out of bounds error now thanks to: 	from java.lang import Exception	
+		except Exception, err:
+			print type(err)
+			break
+		finally:
+			n += 1
+			
+			# just in case of infinite looping
+			if n > 10000:
+				break
+		
+	# add the component to our dictionary, they key is its name
+	# NEED KEY ALREADY EXISTS HANDLING
+		dictComponentDictionary[comp.name] = comp
+	
+	# print out the values in dictionary, 4debug
+	for i in dictComponentDictionary:
+		comp = dictComponentDictionary[i] 
+		print type(comp), comp.name, comp.text
+	
+	# add the dictionary to the global dictionary
+	glob['components'] = dictComponentDictionary
+	
+	print 'end' # 4debug
+	
+	
+	
+	
+	
+	
+	
+	# currently unused and not needed
+	# a class for storing the component; ADD ABSOLUTE PATHS? getwindow or something
+	class compStore:
+		def __init__(self, name, component):
+			self.name = name
+			self.component = component
+	
+	
+	# this is working except for global scope dictionary
+	dictComponentDictionary = {'dummy': 'dum'}
+			dictComponentDictionary.pop('dummy')
+			
+			
+			#dictComponentDictionary["first"] = 'success'
+			
+			#print dictComponentDictionary["first"]
+			print system.date.now()
+			# print event.source.getComponent.getBounds() # this just throws an error
+			
+			# iterates over the objects in container and adds to dictionary
+			for n in range(1000):
+				try:
+					comp = event.source.getComponent(n)
+					
+					compname = comp.name
+					print event.source.getComponent(n).name
+					
+			# this catches the out of bounds error now thanks to: 	from java.lang import Exception	
+				except Exception, err:
+					print type(err)
+					break
+				
+				dictComponentDictionary[compname] = comp
+			
+			# print out the values in dictionary, 4debug
+			for i in dictComponentDictionary:
+				comp = dictComponentDictionary[i] 
+				print type(comp)
+				print comp.name, comp.text
+			
+			
+			
+			print 'end'
+	
+	
+	
+	# this works as far as the looping and error handling, need objects in dict
+	for n in range(1000):
+		try:
+			print n
+			comp = event.source.getComponent(n)
+			compname = comp.name
+			print event.source.getComponent(n).name
+			
+	# this catches the out of bounds error now thanks to: 	from java.lang import Exception	
+		except Exception, err:
+			print type(err)
+			break
+		
+		dictComponentDictionary[n] = n+1
+		print dictComponentDictionary[n]
+	
+	# print out the values in dictionary, 4debug
+	for i in dictComponentDictionary:
+		print dictComponentDictionary[i]
+	
+	print 'end'
+	
+	
+	
+	
+	
+	
+	
+	# this version before adding java exception lib
+	for n in range(10):
+		try:
+			print n
+			print event.source.getComponent(n).name
+			
+		except NameError as nerr:
+			print type(nerr)
+			break
+			
+		except Exception as err:
+			print type(err)
+			break
+		
+		dictComponentDictionary[n] = n+1
+		print dictComponentDictionary[n]
+		
+	print 'end'
+'''
