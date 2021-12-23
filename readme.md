@@ -19,8 +19,8 @@ Shareable and useful code I've written for use with Ignition. Many are convenien
 These are Ignition projects that I've built that are now in production.
 
 A couple notes:
-* These were built for large production displays and screencaped on a small screen, so a few things are displayed a bit cramped.
-* Some information is obscured or substituted as it is proprietary.
+* These were built for large production displays and screencapped on a personal computer screen, so a few things are displayed a bit cramped.
+* Some information is obscured or substituted as it is proprietary or otherwise not fit for public disclosure.
 
 ### Epoxy Coating
 This was the first interface I built using Ignition. The operators select their work order on a [filtered list](https://github.com/HelloMorrisMoss/diagrams_and_images/blob/main/dashboards_and_hmi/filtered%20workorder%20selection.png) extracted from JD Edwards, the product and corresponding running conditions are loaded from a database, as well as displaying the instructions for how that product should be packed. This interface works with a smart remote for easy input.
