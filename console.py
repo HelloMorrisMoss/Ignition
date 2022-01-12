@@ -10,7 +10,9 @@ Functions
 def recurse_find_code(comp=None, indent=0):
 	"""Get the code from the Ignition Script Console where this is called as unicode."""
 	
+	import java
 	import com.inductiveautomation.ignition.designer.gui.tools.CodeEditor
+	
 	
 	# find the root
 	if comp is None:
@@ -42,6 +44,7 @@ def save_console_code(save_path=None):
 	"""
 	
 	import os
+	import java
 	
 	# default to a file in the user's home directory
 	if not save_path:
@@ -49,9 +52,5 @@ def save_console_code(save_path=None):
 		save_path = os.path.join(home_dir, 'console_code.py')
 
 	code_txt = recurse_find_code()
-	if code_txt:
-		print('code txt', code_txt[:20])
-	else:
-		print('returned: {}'.format(code_txt))
 	with open(save_path, 'w') as save_file:
 		save_file.write(code_txt)
