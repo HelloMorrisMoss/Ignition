@@ -12,6 +12,7 @@ Shareable and useful code I've written for use with Ignition. Many are convenien
 
 * Psuedo-tag: for a cleaner, more object-oriented style to interact with a tag.
 * PyDataList: for working on DataSets as Python lists, with many extras.
+* save_console_code: ever have the Ignition designer's script console freeze up and lose your code? Call this at the top and save it to a file automatically.
 * utils: many small convenience functions.
 
 
